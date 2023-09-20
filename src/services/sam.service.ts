@@ -1,11 +1,12 @@
 import axios from "axios"
 
-export const getAll = async (isIDIR: boolean) => {
+export const getAll = async () => {
+    console.log("calling SAM Users/GetAll")
     const url = `${process.env.SAM_API_URL}/GetAll/`
     const response = await axios
         .get(`${url}`, {
             params: {
-                isIDIR
+                getIDIR: true
             },
             auth: {
                 username: `${process.env.SAM_API_USERNAME}`,
@@ -13,9 +14,13 @@ export const getAll = async (isIDIR: boolean) => {
             }
         })
         .then(
-            (response) =>
-                // console.log(response.data.filter((item: any) => item.Application === "WGS"))
-                response.data
+            (response) => {
+                if (response?.data) {
+                    console.log("SAM Users/GetAll returned successfully")
+                    return response.data
+                }
+                return null
+            }
         )
         .catch((error) => {
             console.log(error)
