@@ -7,15 +7,6 @@ labels:
   template: workbc-sam-chefs-cron
 objects:
 - apiVersion: v1
-  kind: Secret
-  type: opaque
-  metadata:
-    name: ${NAME}-service
-  stringData:
-    username: ${APP_USER}
-    password: ${APP_PASS}
-    samURL: ${SAM_URL}
-- apiVersion: v1
   kind: ImageStream
   metadata:
     creationTimestamp: null
@@ -71,32 +62,6 @@ objects:
             periodSeconds: 10
             successThreshold: 1
             failureThreshold: 3
-          env:
-          - name: APP_USER
-            valueFrom:
-              secretKeyRef:
-                key: username
-                name: ${NAME}-service
-          - name: APP_PASS
-            valueFrom:
-              secretKeyRef:
-                key: password
-                name: ${NAME}-service
-          - name: SAM_API_URL
-            valueFrom:
-              secretKeyRef:
-                key: samURL
-                name: ${NAME}-service
-          - name: SAM_API_USERNAME
-            valueFrom:
-              secretKeyRef:
-                key: username
-                name: ${SAM_AUTH_SECRET_NAME}
-          - name: SAM_API_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                key: password
-                name: ${SAM_AUTH_SECRET_NAME}
     test: false
     triggers:
     - type: ConfigChange
@@ -138,28 +103,8 @@ parameters:
   name: TAG
   required: true
   value: latest
-- description: App User
-  displayName: App User
-  name: APP_USER
-  required: true
-  value: ''
-- description: App Pass
-  displayName: App Pass
-  name: APP_PASS
-  required: true
-  value: ''
-- description: SAM Auth Secret Name
-  displayName: SAM Auth Secret Name
-  name: SAM_AUTH_SECRET_NAME
-  required: true
-  value: ''
-- description: SAM URL
-  displayName: SAM URL
-  name: SAM_URL
-  required: true
-  value: ''
 - description: The namespace of the OS project containing the imagestreams
   displayName: Image Namespace
   name: IMAGE_NAMESPACE
   required: true
-  value: myproject-tools
+  value: 551bf1-tools
