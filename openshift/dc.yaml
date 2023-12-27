@@ -46,14 +46,6 @@ objects:
             limits:
               cpu: '10m'
               memory: '200Mi'
-          readinessProbe:
-            tcpSocket:
-              port: 8000
-            initialDelaySeconds: 10
-            timeoutSeconds: 1
-            periodSeconds: 120
-            successThreshold: 1
-            failureThreshold: 3
           livenessProbe:
             tcpSocket:
               port: 8000
