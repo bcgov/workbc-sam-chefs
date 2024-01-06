@@ -57,18 +57,23 @@ cron.schedule("30 1 * * *", async () => {
                             console.log(error.message)
                             throw new Error
                         })
-                        if (userResponse?.data?.length === 1){ // only give user form permissions if one match was found
-                            const chefsUserID = userResponse.data[0].id
-                            console.log(`Beginning permission granting for user ${user.username}`)
+                        let chefsUserID
+                        if (userResponse?.data?.length > 1){
+                            console.log(`user ${user.username} returned multiple results in CHEFS - skipping`)
+                            continue
+                        }
+                        if (userResponse?.data?.length === 0){
+                            console.log(`user ${user.username} not found in CHEFS - creating user...`)
+                            chefsUserID = await createUser(accessToken, user.guid, user.username)
+                        }
+                        else if (userResponse?.data?.length === 1){ // only give user form permissions if one match was found
+                            chefsUserID = userResponse.data[0].id
+                        }
+                        if (chefsUserID){
+                            console.log(`Beginning permission granting for user ${user.username} with chefs userID ${chefsUserID}...`)
                             await giveFormPermissions(process.env.NEED_EMPLOYEE_FORM_ID as string, chefsUserID, user, accessToken, false)
                             await giveFormPermissions(process.env.HAVE_EMPLOYEE_FORM_ID as string, chefsUserID, user, accessToken, false)
                             await giveFormPermissions(process.env.SERVICE_PROVIDER_CLAIM_FORM_ID as string, chefsUserID, user, accessToken, true)
-                        }
-                        else if (userResponse?.data?.length === 0){
-                            console.log(`user ${user.username} not found in CHEFS - skipping`)
-                        }
-                        else {
-                            console.log(`user ${user.username} returned multiple results in CHEFS - skipping`)
                         }
                     }
                 }
@@ -122,4 +127,27 @@ const giveFormPermissions = async (formID: string, chefsUserID: string, user: an
         console.log(error.message)
         throw new Error
     })
+}
+
+export const createUser = async (token: string, userGUID: string, username: string) => {
+    try {
+        const url = `${process.env.CHEFS_API_URL}/users`
+        const data = {
+            guid: userGUID
+        }
+        const config = {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }
+        const userCreateResponse = await axios.post(url, data, config)
+        const createdUserID = userCreateResponse.data
+        if (createdUserID){
+            console.log(`created CHEFS user with id ${createdUserID} for user ${username}`)
+        }
+        return createdUserID
+    } catch (e: any) {
+        console.log(e)
+        throw new Error()
+    }
 }
