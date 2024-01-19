@@ -5,7 +5,7 @@ import { getAll } from "./controllers/sam.controller"
 
 console.log(`CRON SERVER START`)
 let serviceAccountToken
-cron.schedule("*/20 * * * *", async () => {
+cron.schedule("*/15 * * * *", async () => {
     console.log("========== BEGIN CRON JOB ==========")
     if (!process.env.GET_TOKEN_URL || !process.env.CHEFS_SERVICE_ACCOUNT_USERNAME || !process.env.CHEFS_SERVICE_ACCOUNT_PASSWORD
         || !process.env.CHEFS_API_URL || !process.env.SAM_API_URL || !process.env.SAM_API_PASSWORD || !process.env.SAM_API_URL
@@ -66,6 +66,8 @@ cron.schedule("*/20 * * * *", async () => {
         } else {
             console.log("no access token found in response")
         }
+    } else {
+        console.log("users not obtained")
     }
     console.log("========== END CRON JOB ==========")
 })
