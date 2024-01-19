@@ -66,6 +66,8 @@ cron.schedule("30 1 * * *", async () => {
         } else {
             console.log("no access token found in response")
         }
+    } else {
+        console.log("invalid users object")
     }
     console.log("========== END CRON JOB ==========")
 })

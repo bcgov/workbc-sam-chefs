@@ -24,7 +24,7 @@ export const getAll = async () => {
         )
         .catch((error) => {
             console.log(error)
-            return error
+            throw new Error("error querying Users/GetAll")
         })
     return response
 }
