@@ -5,7 +5,7 @@ import { getAll } from "./controllers/sam.controller"
 
 console.log(`CRON SERVER START`)
 let serviceAccountToken
-cron.schedule("0 */3 * * *", async () => {
+cron.schedule("30 1 * * *", async () => {
     console.log("========== BEGIN CRON JOB ==========")
     if (!process.env.GET_TOKEN_URL || !process.env.CHEFS_SERVICE_ACCOUNT_USERNAME || !process.env.CHEFS_SERVICE_ACCOUNT_PASSWORD
         || !process.env.CHEFS_API_URL || !process.env.SAM_API_URL || !process.env.SAM_API_PASSWORD || !process.env.SAM_API_URL
